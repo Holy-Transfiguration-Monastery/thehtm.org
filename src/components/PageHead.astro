@@ -1,0 +1,19 @@
+---
+// Title block at the top of every inner page: optional breadcrumb, heading, optional intro line.
+interface Props {
+  title: string;
+  lede?: string;
+  crumbs?: { label: string; href?: string }[];
+}
+const { title, lede, crumbs = [] } = Astro.props;
+---
+<header class="page-head">
+  {crumbs.length > 0 && (
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>{crumbs.map((c) => <li>{c.href ? <a href={c.href}>{c.label}</a> : c.label}</li>)}</ol>
+    </nav>
+  )}
+  <h1>{title}</h1>
+  {lede && <p class="lede">{lede}</p>}
+  <slot />
+</header>

@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import Post from '../../components/Post.astro';
+export async function getStaticPaths() {
+  return (await getCollection('news')).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+---
+<Post entry={Astro.props.entry} section="News" base="/news" />

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PostList from '../components/PostList.astro';
+import { posts } from '../lib';
+const entries = await posts('news');
+---
+<Base title="News" wide>
+  <PageHead title="News" lede="Announcements from the monastery, its publications and the store.">
+    <p class="meta"><a href="/news/rss.xml">Subscribe by RSS</a></p>
+  </PageHead>
+  <PostList entries={entries} base="/news" headingLevel="h2" />
+</Base>

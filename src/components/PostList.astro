@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { excerpt, firstImage, formatDate } from '../lib';
+interface Props {
+  entries: CollectionEntry<'news' | 'reading'>[];
+  base: string;
+  /** h2 on listing pages (right under the h1), h3 under a section heading. */
+  headingLevel?: 'h2' | 'h3';
+}
+const { entries, base, headingLevel: Heading = 'h3' } = Astro.props;
+---
+<ul class="cards">
+  {entries.map((e) => {
+    const img = firstImage(e);
+    return (
+      <li class="card">
+        <a href={`${base}/${e.id}`}>
+          {img ? <img src={img} alt="" loading="lazy" width="400" height="250" /> : <div class="card-art" aria-hidden="true">✠</div>}
+          <div class="card-body">
+            <time datetime={e.data.date.toISOString().slice(0, 10)}>{formatDate(e.data.date)}</time>
+            <Heading class="card-title">{e.data.title}</Heading>
+            <p>{excerpt(e)}</p>
+          </div>
+        </a>
+      </li>
+    );
+  })}
+</ul>

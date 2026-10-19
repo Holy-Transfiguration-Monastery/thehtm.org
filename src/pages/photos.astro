@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+const albums = (await getCollection('albums')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Photos" wide>
+  <PageHead title="Photos" lede="The monastery house and grounds through the seasons." />
+  <ul class="albums">
+    {albums.map((a) => (
+      <li>
+        <a href={`/${a.id}`}>
+          <img src={a.data.cover || a.data.photos[0]?.thumb || a.data.photos[0]?.src} alt="" width="400" height="300" loading="lazy" />
+          <span>{a.data.title}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

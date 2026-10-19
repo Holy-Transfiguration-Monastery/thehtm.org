@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PostList from '../components/PostList.astro';
+import { posts } from '../lib';
+const entries = await posts('reading');
+---
+<Base title="Spiritual Reading" wide>
+  <PageHead title="Spiritual Reading" lede="Homilies and excerpts from the Fathers and the lives of the saints." />
+  <PostList entries={entries} base="/spiritual-reading" headingLevel="h2" />
+</Base>

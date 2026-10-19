@@ -1,0 +1,135 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import logo from '../assets/logo.png';
+import site from '../data/site.json';
+import { musicTree } from '../lib';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Wide pages (galleries, the home page) use the full content width. */
+  wide?: boolean;
+  /** Top menu item to highlight, when it differs from the URL (e.g. /music). */
+  section?: string;
+}
+const { title, description = site.description, wide = false, section } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}` : site.name;
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/(index)?$/, '') || '/';
+const canonical = new URL(path, Astro.site);
+
+const albums = (await getCollection('albums')).sort((a, b) => a.data.order - b.data.order);
+const tree = await musicTree();
+const submenus: Record<string, { label: string; items: { label: string; href: string }[] }[]> = {
+  '/photos': [{ label: '', items: albums.map((a) => ({ label: a.data.title, href: `/${a.id}` })) }],
+  '/music': [
+    { label: 'Greek', items: tree.greek.map((n) => ({ label: n.entry.data.menuTitle ?? n.entry.data.title, href: `/${n.entry.id}` })) },
+    { label: 'English', items: tree.english.map((n) => ({ label: n.entry.data.menuTitle ?? n.entry.data.title, href: `/${n.entry.id}` })) },
+  ],
+};
+const isCurrent = (href: string) =>
+  href === section || (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="News" href="/news/rss.xml" />
+    <meta name="theme-color" content="#0f0f0f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og.jpg', Astro.site)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap bar">
+        <a href="/" class="logo" aria-label={`${site.name}, home`}>
+          <Image src={logo} alt="" width={580} loading="eager" fetchpriority="high" />
+        </a>
+        <nav aria-label="Main">
+          <details class="menu-toggle">
+            <summary>Menu</summary>
+          </details>
+          <ul class="nav">
+            {site.nav.map((item) => {
+              const sub = submenus[item.href];
+              const external = item.href.startsWith('http');
+              return (
+                <li class:list={{ 'has-sub': sub }}>
+                  <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined} rel={external ? 'noopener' : undefined}>
+                    {item.label}
+                  </a>
+                  {sub && (
+                    <div class="sub">
+                      {sub.map((group) => (
+                        <div>
+                          {group.label && <p class="sub-label">{group.label}</p>}
+                          <ul>
+                            {group.items.map((s) => (
+                              <li><a href={s.href} aria-current={isCurrent(s.href) ? 'page' : undefined}>{s.label}</a></li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+            <li><a href="/search" aria-current={isCurrent('/search') ? 'page' : undefined}>Search</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <slot name="hero" />
+
+    <main id="main" class:list={['content', { wide }]} data-pagefind-body>
+      <div class="wrap"><slot /></div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-cols">
+        <section class="footer-about">
+          <p class="footer-name">{site.name}</p>
+          <p>{site.description}</p>
+        </section>
+        <section>
+          <h2>Menu</h2>
+          <ul>{site.nav.map((i) => <li><a href={i.href}>{i.label}</a></li>)}</ul>
+        </section>
+        <section>
+          <h2>Contact</h2>
+          <address>
+            {site.address.map((line) => <>{line}<br /></>)}
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </address>
+          <ul class="phones">
+            {site.phones.map((p) => <li><a href={`tel:+1${p.replaceAll('-', '')}`}>{p}</a></li>)}
+          </ul>
+          <p>Fax: {site.fax}</p>
+        </section>
+        <section>
+          <h2>Recommended</h2>
+          <ul>{site.recommended.map((r) => <li><a href={r.href} rel="noopener">{r.label}</a></li>)}</ul>
+        </section>
+      </div>
+      <div class="wrap"><p class="copyright">&copy; {year} The Holy Transfiguration Monastery</p></div>
+    </footer>
+  </body>
+</html>

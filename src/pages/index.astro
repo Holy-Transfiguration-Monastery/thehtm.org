@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import house from '../assets/house-wide.jpg';
+import icon from '../assets/transfiguration-icon.png';
+import site from '../data/site.json';
+import { hymnCount, posts } from '../lib';
+
+const home = await getEntry('pages', 'home');
+if (!home) throw new Error('Missing src/content/pages/home.md');
+const { Content } = await render(home);
+
+const news = await posts('news');
+const reading = await posts('reading');
+const albums = (await getCollection('albums')).sort((a, b) => a.data.order - b.data.order);
+const hymns = await hymnCount();
+const photoCount = albums.reduce((n, a) => n + a.data.photos.length, 0);
+---
+<Base wide>
+  <section slot="hero" class="hero">
+    <Image class="hero-img" src={house} alt="" widths={[700, 1100, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
+    <div class="wrap hero-text">
+      <p class="eyebrow">Orthodox monastic community · Brookline, Massachusetts</p>
+      <h1>{site.name}</h1>
+      <p class="hero-lede">A brotherhood of monks at prayer since 1960, and a library of liturgical music in English and Greek, free to view and print.</p>
+      <div class="actions">
+        <a class="btn" href="/music">Browse the music library</a>
+        <a class="btn ghost" href="/information">About the monastery</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="community">
+    <figure>
+      <Image src={icon} alt="Icon of the Holy Transfiguration of Christ" widths={[380, 403]} sizes="(max-width: 820px) 100vw, 380px" />
+      <figcaption>The Community’s Patronal Icon of The Holy Transfiguration (by the hand of Photios Kontoglou)</figcaption>
+    </figure>
+    <div class="prose">
+      <p class="eyebrow">About us</p>
+      <h2>{home.data.title}</h2>
+      <Content />
+    </div>
+  </section>
+
+  <ul class="tiles">
+    <li><a href="/music"><span class="num">{hymns}</span><strong>Hymns</strong>Sheet music in English and Greek</a></li>
+    <li><a href="/news"><span class="num">{news.length}</span><strong>News posts</strong>Announcements and publications</a></li>
+    <li><a href="/spiritual-reading"><span class="num">{reading.length}</span><strong>Readings</strong>From the Fathers and the saints</a></li>
+    <li><a href="/photos"><span class="num">{photoCount}</span><strong>Photos</strong>{albums.length} albums of the monastery grounds</a></li>
+  </ul>
+
+  <div class="section-head"><h2>Latest news</h2><a href="/news">All news →</a></div>
+  <PostList entries={news.slice(0, 3)} base="/news" />
+
+  <div class="section-head"><h2>Spiritual reading</h2><a href="/spiritual-reading">All readings →</a></div>
+  <PostList entries={reading.slice(0, 3)} base="/spiritual-reading" />
+</Base>

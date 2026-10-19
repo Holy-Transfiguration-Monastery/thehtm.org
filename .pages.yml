@@ -1,0 +1,160 @@
+# Pages CMS configuration: https://pagescms.org/docs/configuration/
+# Defines the editing forms the monks see at app.pagescms.org.
+
+media:
+  - name: files
+    label: Music PDFs and documents
+    input: public/files
+    output: /files
+    categories: [document]
+    rename: safe
+  - name: images
+    label: Photos and images
+    input: public/images/uploads
+    output: /images/uploads
+    categories: [image]
+    rename: safe
+  - name: legacy
+    label: Files from the old site
+    input: public/uploads/1/2/0/1/120141198
+    output: /uploads/1/2/0/1/120141198
+
+content:
+  - name: news
+    label: News
+    type: collection
+    path: src/content/news
+    filename: '{primary}.md'
+    view:
+      fields: [title, date]
+      primary: title
+      sort: [date, title]
+      default: { sort: date, order: desc }
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: date, label: Date, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - name: body
+        label: Text
+        type: rich-text
+        options: { format: markdown, media: images }
+
+  - name: reading
+    label: Spiritual Reading
+    type: collection
+    path: src/content/reading
+    filename: '{primary}.md'
+    view:
+      fields: [title, date]
+      primary: title
+      default: { sort: date, order: desc }
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: date, label: Date, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - name: body
+        label: Text
+        type: rich-text
+        options: { format: markdown, media: images }
+
+  - name: music
+    label: Music pages
+    type: collection
+    path: src/content/music
+    filename: '{primary}.md'
+    view:
+      fields: [title, section, order]
+      primary: title
+      sort: [title, order]
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - name: menuTitle
+        label: Short name for menus
+        type: string
+        description: Optional. For example "September" instead of the full page title.
+      - name: section
+        label: Section
+        type: select
+        required: true
+        options:
+          values:
+            - { name: english, label: English }
+            - { name: greek, label: Greek }
+            - { name: index, label: Music home page (only one page uses this) }
+      - name: parent
+        label: Appears under
+        type: reference
+        description: Leave empty for a main category. Pick a page to list this one under it (for example a month under "Menaion Hymns").
+        options: { collection: music, value: '{path}', label: '{primary}' }
+      - name: order
+        label: Position in its list
+        type: number
+        description: 1 = first.
+        default: 99
+      - { name: inMenu, label: Show in menus, type: boolean, default: true }
+      - name: body
+        label: Hymns on this page
+        type: rich-text
+        description: To add a hymn, type its name, select it, click the link button and choose the PDF you uploaded.
+        options: { format: markdown, media: files }
+
+  - name: albums
+    label: Photo albums
+    type: collection
+    path: src/content/albums
+    format: yaml
+    filename: '{primary}.yml'
+    view:
+      fields: [title, order]
+      primary: title
+    fields:
+      - { name: title, label: Album title, type: string, required: true }
+      - { name: order, label: Position on the Photos page, type: number, default: 1 }
+      - { name: intro, label: Short description (optional), type: text }
+      - { name: cover, label: Cover photo, type: image, options: { media: images } }
+      - name: photos
+        label: Photos
+        type: object
+        list: true
+        fields:
+          - { name: src, label: Photo, type: image, required: true, options: { media: images } }
+          - { name: caption, label: Caption (optional), type: string }
+
+  - name: pages
+    label: Home and Information
+    type: collection
+    path: src/content/pages
+    operations: { create: false, delete: false, rename: false }
+    fields:
+      - { name: title, label: Heading, type: string, required: true }
+      - name: body
+        label: Text
+        type: rich-text
+        options: { format: markdown, media: images }
+
+  - name: site
+    label: Contact details and links
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - { name: name, label: Monastery name, type: string }
+      - { name: shortName, type: string, hidden: true }
+      - { name: description, label: Description for search engines, type: text }
+      - { name: address, label: Address lines, type: string, list: true }
+      - { name: email, label: Email, type: string }
+      - { name: phones, label: Phone numbers, type: string, list: true }
+      - { name: fax, label: Fax, type: string }
+      - name: nav
+        label: Main menu
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: href, label: Link, type: string }
+      - name: recommended
+        label: Recommended links
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Name, type: string }
+          - { name: href, label: Link, type: string }
+      - { name: youtube, label: YouTube channel, type: string }

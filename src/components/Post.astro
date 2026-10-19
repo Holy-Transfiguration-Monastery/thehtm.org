@@ -1,0 +1,15 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from './PageHead.astro';
+import { formatDate } from '../lib';
+interface Props { entry: CollectionEntry<'news' | 'reading'>; section: string; base: string }
+const { entry, section, base } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={entry.data.title} description={entry.data.summary} section={base}>
+  <PageHead title={entry.data.title} crumbs={[{ label: section, href: base }]}>
+    <p class="meta"><time datetime={entry.data.date.toISOString().slice(0, 10)}>{formatDate(entry.data.date)}</time></p>
+  </PageHead>
+  <article class="prose"><Content /></article>
+</Base>

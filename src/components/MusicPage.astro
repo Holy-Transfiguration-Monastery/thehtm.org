@@ -1,0 +1,61 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from './PageHead.astro';
+import { musicTree, subtreeCount } from '../lib';
+
+interface Props { id: string }
+const { id } = Astro.props;
+const entry = (await getEntry('music', id))!;
+const { Content } = await render(entry);
+const all = await getCollection('music');
+const isIndex = entry.data.section === 'index';
+const label = (e: (typeof all)[number]) => e.data.menuTitle ?? e.data.title;
+
+// Breadcrumb: Music > Greek/English > parent pages
+const trail = [];
+let p = entry.data.parent;
+while (p) {
+  const parent = all.find((e) => e.id === p);
+  if (!parent) break;
+  trail.unshift(parent);
+  p = parent.data.parent;
+}
+const crumbs = isIndex
+  ? []
+  : [{ label: 'Music', href: '/music' }, { label: entry.data.section === 'greek' ? 'Greek' : 'English' }, ...trail.map((t) => ({ label: label(t), href: `/${t.id}` }))];
+const children = all.filter((e) => e.data.parent === id).sort((a, b) => a.data.order - b.data.order);
+const tree = isIndex ? await musicTree() : null;
+---
+<Base title={entry.data.title} section="/music" wide={isIndex}>
+  <PageHead title={entry.data.title} crumbs={crumbs} />
+  <article class="prose"><Content /></article>
+
+  {children.length > 0 && !isIndex && (
+    <nav class="children" aria-label="Pages in this section">
+      <h2>In this section</h2>
+      <ul class="chips">{children.map((c) => <li><a href={`/${c.id}`}>{label(c)}</a></li>)}</ul>
+    </nav>
+  )}
+
+  {tree && (
+    <div class="music-index">
+      {(['greek', 'english'] as const).map((s) => (
+        <section>
+          <h2>{s === 'greek' ? 'Greek' : 'English'}</h2>
+          <ul class="m-cards">
+            {tree[s].map((n) => (
+              <li class="m-card">
+                <a class="m-title" href={`/${n.entry.id}`}>{n.entry.data.title}</a>
+                {n.children.length > 0 && (
+                  <ul class="chips">{n.children.map((c) => <li><a href={`/${c.entry.id}`}>{label(c.entry)}</a></li>)}</ul>
+                )}
+                <p class="m-meta">{subtreeCount(n)} hymns</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )}
+</Base>
