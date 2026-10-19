@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import house from '../assets/house.jpg';
+import icon from '../assets/transfiguration-icon.png';
+
+const home = await getEntry('pages', 'home');
+if (!home) throw new Error('Missing src/content/pages/home.md');
+const { Content } = await render(home);
+---
+<Base wide>
+  <Image slot="banner" class="banner" src={house} alt="The monastery's main house, a red-brick 1881 mansion among trees" widths={[600, 1000]} sizes="(max-width: 1100px) 100vw, 1100px" loading="eager" />
+  <div class="community">
+    <figure>
+      <h1>{home.data.title}</h1>
+      <Image src={icon} alt="Icon of the Holy Transfiguration of Christ" widths={[340, 403]} sizes="(max-width: 760px) 100vw, 340px" />
+      <figcaption>The Community’s Patronal Icon of The Holy Transfiguration (by the hand of Photios Kontoglou)</figcaption>
+    </figure>
+    <div class="prose"><Content /></div>
+  </div>
+</Base>

@@ -1,0 +1,28 @@
+{
+  "name": "The Holy Transfiguration Monastery",
+  "shortName": "thehtm",
+  "description": "The Holy Transfiguration Monastery, an Orthodox monastic community in Brookline, Massachusetts, since 1960.",
+  "address": ["The Holy Transfiguration Monastery", "278 Warren St", "Brookline, MA 02445-5950"],
+  "email": "info@thehtm.org",
+  "phones": ["617-734-0608", "617-391-7145", "617-277-3858", "617-391-8995", "617-232-2326", "617-419-5063"],
+  "fax": "617-730-5783",
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "Information", "href": "/information" },
+    { "label": "Photos", "href": "/photos" },
+    { "label": "News", "href": "/news" },
+    { "label": "Spiritual Reading", "href": "/spiritual-reading" },
+    { "label": "htmp.org", "href": "https://www.htmp.org/" },
+    { "label": "The HTM Store", "href": "https://www.bostonmonks.com/" },
+    { "label": "Music", "href": "/music" }
+  ],
+  "recommended": [
+    { "label": "Church Woodcarvers of North America", "href": "http://www.greekorthodoxwoodcarver.com/" },
+    { "label": "Convent of the Meeting of the Lord", "href": "http://www.quietlightcandles.com/" },
+    { "label": "Holy Orthodox Church in North America", "href": "http://www.homb.org/" },
+    { "label": "Saint Nectarios Press", "href": "http://www.stnectariospress.com/" },
+    { "label": "The Holy Nativity Convent", "href": "http://holynativityconvent.com/splash-page.html" },
+    { "label": "The Year of Our Salvation", "href": "http://www.tyoos.org/" }
+  ],
+  "youtube": "https://www.youtube.com/channel/UCfkg2PTuFkvSUlA7mHgnTEA/videos"
+}

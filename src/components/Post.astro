@@ -1,0 +1,16 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { formatDate } from '../lib';
+interface Props { entry: CollectionEntry<'news' | 'reading'>; section: string; base: string }
+const { entry, section, base } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={entry.data.title} description={entry.data.summary} section={base}>
+  <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href={base}>{section}</a></li></ol></nav>
+  <article class="prose">
+    <h1>{entry.data.title}</h1>
+    <p class="meta"><time datetime={entry.data.date.toISOString().slice(0, 10)}>{formatDate(entry.data.date)}</time></p>
+    <Content />
+  </article>
+</Base>

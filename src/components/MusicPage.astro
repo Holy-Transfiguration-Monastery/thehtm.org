@@ -1,0 +1,51 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import MusicTree from './MusicTree.astro';
+import { musicTree } from '../lib';
+
+interface Props { id: string }
+const { id } = Astro.props;
+const entry = (await getEntry('music', id))!;
+const { Content } = await render(entry);
+const all = await getCollection('music');
+const tree = await musicTree();
+// Breadcrumb: Music > Greek/English > parent pages > this page
+const trail = [];
+let p = entry.data.parent;
+while (p) {
+  const parent = all.find((e) => e.id === p);
+  if (!parent) break;
+  trail.unshift(parent);
+  p = parent.data.parent;
+}
+const children = all.filter((e) => e.data.parent === id).sort((a, b) => a.data.order - b.data.order);
+const sectionName = entry.data.section === 'greek' ? 'Greek' : 'English';
+---
+<Base title={entry.data.title} section="/music">
+  {entry.data.section !== 'index' && (
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/music">Music</a></li>
+        <li>{sectionName}</li>
+        {trail.map((t) => <li><a href={`/${t.id}`}>{t.data.menuTitle ?? t.data.title}</a></li>)}
+      </ol>
+    </nav>
+  )}
+  <article class="prose">
+    <h1>{entry.data.title}</h1>
+    <Content />
+  </article>
+  {children.length > 0 && entry.data.section !== 'index' && (
+    <nav class="children" aria-label="Pages in this section">
+      <h2>In this section</h2>
+      <ul>{children.map((c) => <li><a href={`/${c.id}`}>{c.data.menuTitle ?? c.data.title}</a></li>)}</ul>
+    </nav>
+  )}
+  {entry.data.section === 'index' && (
+    <div class="music-index">
+      <section class="tree"><h2>Greek</h2><MusicTree nodes={tree.greek} /></section>
+      <section class="tree"><h2>English</h2><MusicTree nodes={tree.english} /></section>
+    </div>
+  )}
+</Base>

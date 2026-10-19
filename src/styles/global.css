@@ -1,0 +1,249 @@
+/* thehtm.org: a faithful refresh of the original dark theme
+   (near-black column on oxblood, red accents, Georgia serif). */
+
+:root {
+  --page: #560007;
+  --surface: #0f0f0f;
+  --surface-2: #181818;
+  --line: #2a2a2a;
+  --text: #b8b8b8;
+  --muted: #8e8e8e;
+  --heading: #d9d9d9;
+  --accent: #f64c3f;
+  --accent-hover: #ff7a6e;
+  --serif: Georgia, 'Noto Serif', 'Times New Roman', serif;
+  --measure: 68ch;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font: 1.125rem/1.7 var(--serif);
+}
+
+img { max-width: 100%; height: auto; }
+
+a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 2px; }
+
+h1, h2, h3 { color: var(--heading); font-weight: normal; line-height: 1.25; }
+h1 { font-size: clamp(1.75rem, 1.3rem + 2vw, 2.4rem); margin: 0 0 1.25rem; }
+h2 { font-size: 1.5rem; margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+
+.skip { position: absolute; left: -999px; top: 0; background: var(--surface); padding: 0.5rem 1rem; z-index: 10; }
+.skip:focus { left: 1rem; }
+
+.frame {
+  max-width: 1100px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- header and navigation ---------- */
+
+.site-header { text-align: center; }
+/* Fixed-width block so the logo's space is reserved before it loads (no layout shift). */
+.logo { display: block; max-width: calc(680px + 2rem); margin: 0 auto; padding: 1.75rem 1rem 1rem; }
+.logo img { display: block; width: 100%; height: auto; }
+
+.nav {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+}
+.nav > li { position: relative; }
+.nav a { display: block; padding: 0.4rem 0.9rem; color: var(--muted); text-decoration: none; font-size: 1rem; }
+.nav a:hover, .nav a:focus-visible { color: var(--heading); }
+.nav > li > a[aria-current='page'] { background: #f2f2f2; color: #222; }
+
+.sub {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 5;
+  min-width: 15rem;
+  padding: 0.75rem 0.5rem;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  text-align: left;
+  gap: 1rem;
+}
+.has-sub:hover > .sub, .has-sub:focus-within > .sub { display: flex; }
+.has-sub:last-of-type .sub, .has-sub:nth-last-child(2) .sub { left: auto; right: 0; }
+.sub ul { list-style: none; margin: 0; padding: 0; min-width: 13rem; }
+.sub a { font-size: 0.95rem; padding: 0.3rem 0.6rem; }
+.sub a[aria-current='page'] { color: var(--heading); }
+.sub-label { margin: 0 0.6rem 0.25rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+.menu-toggle { display: none; }
+
+@media (max-width: 760px) {
+  .menu-toggle { display: block; margin: 0 1rem 1rem; }
+  .menu-toggle summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.45rem 1.1rem;
+    border: 1px solid var(--line);
+    color: var(--heading);
+  }
+  .menu-toggle summary::-webkit-details-marker { display: none; }
+  .menu-toggle summary::before { content: '☰  '; }
+  .menu-toggle[open] summary::before { content: '✕  '; }
+  .nav { display: none; flex-direction: column; text-align: left; padding: 0 1rem 1rem; border-top: 1px solid var(--line); }
+  .menu-toggle[open] + .nav { display: flex; }
+  .nav > li > a { padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--line); }
+  .nav > li > a[aria-current='page'] { background: none; color: var(--heading); }
+  /* On phones, sub-menus show inline under their parent. */
+  .sub, .has-sub:hover > .sub, .has-sub:focus-within > .sub {
+    display: block; position: static; border: 0; background: none; padding: 0 0 0.5rem 1rem; min-width: 0;
+  }
+}
+
+.banner { display: block; width: 100%; height: auto; border-block: 12px solid #000; }
+
+/* ---------- main content ---------- */
+
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: calc(var(--measure) + 4rem);
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+}
+.content.wide { max-width: 1000px; }
+@media (min-width: 760px) { .content { padding-inline: 2rem; } }
+
+.prose p, .prose li { max-width: var(--measure); }
+.prose img { display: block; margin: 1.5rem auto 0.5rem; }
+.prose p:has(> img) + p > em:only-child { display: block; text-align: center; font-size: 0.9rem; color: var(--muted); }
+.prose blockquote { margin: 1.5rem 0; padding-left: 1.25rem; border-left: 3px solid var(--page); color: var(--heading); }
+.prose hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+/* PDF links get a small marker so readers know what they're opening. */
+.prose a[href$='.pdf']::after {
+  content: 'PDF';
+  display: inline-block;
+  margin-left: 0.35em;
+  padding: 0 0.3em;
+  font: 0.6rem/1.5 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  vertical-align: 0.2em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.prose table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; font-size: 1rem; display: block; overflow-x: auto; }
+.prose th, .prose td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.prose th { color: var(--heading); font-weight: normal; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.prose td a[href$='.pdf']::after { display: none; }
+
+.video { position: relative; aspect-ratio: 16 / 9; margin: 1.5rem 0; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+.lede { color: var(--muted); }
+.meta { color: var(--muted); font-size: 0.95rem; margin: -0.75rem 0 1.5rem; }
+
+.crumbs { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
+.crumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0; margin: 0; }
+.crumbs li + li::before { content: '›'; margin-right: 0.4rem; }
+.crumbs a { color: var(--muted); }
+
+/* ---------- home ---------- */
+
+.community { display: grid; gap: 2rem; }
+@media (min-width: 760px) { .community { grid-template-columns: 2fr 3fr; align-items: start; } }
+.community figure { margin: 0; }
+.community figure img { display: block; width: 100%; border: 12px solid var(--page); }
+.community figcaption { margin-top: 0.75rem; font-size: 0.9rem; color: var(--muted); }
+.community .prose p { text-align: justify; hyphens: auto; }
+
+/* ---------- lists of posts / sections ---------- */
+
+.post-list { list-style: none; padding: 0; margin: 0; }
+.post-list li { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.post-list a { font-size: 1.25rem; text-decoration: none; }
+.post-list a:hover { text-decoration: underline; }
+.post-list time { display: block; color: var(--muted); font-size: 0.9rem; }
+
+.music-index { display: grid; gap: 2rem; }
+@media (min-width: 760px) { .music-index { grid-template-columns: 1fr 2fr; } }
+.music-index h2 { margin-top: 0; }
+.tree, .tree ul { list-style: none; padding: 0; margin: 0; }
+.tree ul { padding-left: 1.1rem; border-left: 1px solid var(--line); margin: 0.25rem 0 0.5rem 0.25rem; }
+.tree li { padding: 0.2rem 0; }
+.tree ul a { font-size: 1rem; }
+
+.children { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.children ul { columns: 2 12rem; padding-left: 1.1rem; }
+
+/* ---------- photos ---------- */
+
+.albums { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); list-style: none; padding: 0; }
+.albums a { text-decoration: none; display: block; }
+.albums img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: 0.5rem; }
+
+.gallery { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); list-style: none; padding: 0; }
+.gallery img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: opacity 0.2s; }
+.gallery a:hover img { opacity: 0.8; }
+
+.lightbox { padding: 0; border: 0; background: transparent; max-width: 100vw; max-height: 100vh; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.92); }
+.lightbox figure { margin: 0; display: grid; place-items: center; }
+.lightbox img { max-width: 94vw; max-height: 86vh; object-fit: contain; }
+.lightbox figcaption { color: var(--text); padding: 0.5rem; font-size: 0.95rem; }
+.lightbox button {
+  position: fixed; background: rgb(0 0 0 / 0.5); color: #fff; border: 1px solid #555;
+  font: 1.5rem/1 var(--serif); width: 2.75rem; height: 2.75rem; cursor: pointer;
+}
+.lightbox .close { top: 1rem; right: 1rem; }
+.lightbox .prev { left: 1rem; top: 50%; }
+.lightbox .next { right: 1rem; top: 50%; }
+
+/* ---------- footer ---------- */
+
+.site-footer { border-top: 1px solid var(--line); padding: 3rem 1rem 2rem; font-size: 0.95rem; color: var(--muted); }
+.footer-cols { display: grid; gap: 2rem; max-width: 900px; margin: 0 auto; }
+@media (min-width: 760px) { .footer-cols { grid-template-columns: 1fr 1.2fr 1.4fr; } }
+.site-footer h2 { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.75rem; }
+.site-footer ul { list-style: none; padding: 0; margin: 0; }
+.site-footer li { padding: 0.15rem 0; }
+.site-footer address { font-style: normal; margin-bottom: 0.5rem; }
+.site-footer p { margin: 0.5rem 0 0; }
+.phones { display: grid; grid-template-columns: repeat(2, max-content); column-gap: 1.5rem; }
+.phones a { color: var(--muted); text-decoration: none; }
+.copyright { text-align: center; margin-top: 3rem !important; }
+
+/* ---------- search (Pagefind UI) ---------- */
+
+.search {
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-border: var(--line);
+  --pagefind-ui-tag: var(--surface-2);
+  --pagefind-ui-font: var(--serif);
+}
+
+@media (max-width: 760px) {
+  .logo { padding: 1.25rem 1rem 0.75rem; }
+  .menu-toggle { margin-bottom: 0.75rem; }
+  .content { padding-top: 1.5rem; }
+}

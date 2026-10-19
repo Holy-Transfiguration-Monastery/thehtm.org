@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search">
+  <h1>Search</h1>
+  <p class="lede">Find a hymn by feast, saint or tone, or search the news and readings.</p>
+  <div id="search" class="search"></div>
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.PagefindUI) new PagefindUI({ element: '#search', showSubResults: true, showImages: false });
+      else document.getElementById('search').textContent = 'Search is available on the published site (run a full build to try it locally).';
+    });
+  </script>
+</Base>

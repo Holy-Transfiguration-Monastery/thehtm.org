@@ -1,0 +1,31 @@
+{
+  "name": "thehtm-site",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "astro": "astro",
+    "migrate": "node scripts/migrate.mjs",
+    "verify": "node scripts/verify.mjs",
+    "preview:cf": "wrangler pages dev dist"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "cheerio": "^1.2.0",
+    "pagefind": "^1.5.2",
+    "turndown": "^7.2.4",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.151.1",
+    "yaml": "^2.9.1"
+  }
+}

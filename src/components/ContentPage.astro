@@ -1,0 +1,12 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+interface Props { id: string }
+const { id } = Astro.props;
+const entry = (await getEntry('pages', id))!;
+const { Content } = await render(entry);
+---
+<Base title={entry.data.title}>
+  <article class="prose"><Content /></article>
+</Base>

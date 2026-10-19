@@ -1,0 +1,13 @@
+---
+import type { MusicNode } from '../lib';
+interface Props { nodes: MusicNode[] }
+const { nodes } = Astro.props;
+---
+<ul>
+  {nodes.map((n) => (
+    <li>
+      <a href={`/${n.entry.id}`}>{n.entry.data.menuTitle ?? n.entry.data.title}</a>
+      {n.children.length > 0 && <Astro.self nodes={n.children} />}
+    </li>
+  ))}
+</ul>

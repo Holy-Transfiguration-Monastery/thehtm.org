@@ -1,0 +1,54 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+interface Props { id: string }
+const { id } = Astro.props;
+const entry = (await getEntry('albums', id))!;
+const { title, intro, photos } = entry.data;
+---
+<Base title={title} wide section="/photos">
+  <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/photos">Photos</a></li></ol></nav>
+  <h1>{title}</h1>
+  {intro && <p>{intro}</p>}
+  <ul class="gallery" data-gallery>
+    {photos.map((ph, i) => (
+      <li>
+        <a href={ph.src} data-caption={ph.caption}>
+          <img src={ph.thumb ?? ph.src} alt={ph.caption || `${title}, photo ${i + 1}`} loading={i < 6 ? 'eager' : 'lazy'} width="400" height="300" />
+        </a>
+      </li>
+    ))}
+  </ul>
+  <dialog class="lightbox" aria-label="Photo viewer">
+    <figure><img alt="" /><figcaption></figcaption></figure>
+    <button class="prev" aria-label="Previous photo">‹</button>
+    <button class="next" aria-label="Next photo">›</button>
+    <button class="close" aria-label="Close">✕</button>
+  </dialog>
+</Base>
+<script>
+  // Simple lightbox: click a photo to view it large; arrows to move; Esc to close.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-gallery] a')];
+  const dlg = document.querySelector<HTMLDialogElement>('.lightbox');
+  if (dlg && links.length) {
+    const img = dlg.querySelector('img')!;
+    const cap = dlg.querySelector('figcaption')!;
+    let i = 0;
+    const show = (n: number) => {
+      i = (n + links.length) % links.length;
+      img.src = links[i].href;
+      img.alt = links[i].querySelector('img')?.alt ?? '';
+      cap.textContent = links[i].dataset.caption ?? '';
+    };
+    links.forEach((a, n) => a.addEventListener('click', (e) => { e.preventDefault(); show(n); dlg.showModal(); }));
+    dlg.querySelector('.prev')!.addEventListener('click', () => show(i - 1));
+    dlg.querySelector('.next')!.addEventListener('click', () => show(i + 1));
+    dlg.querySelector('.close')!.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(i - 1);
+      if (e.key === 'ArrowRight') show(i + 1);
+    });
+  }
+</script>

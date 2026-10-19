@@ -1,0 +1,26 @@
+# Old Weebly addresses -> new pages
+/greek.html /music 301
+/english.html /music 301
+/greek /music 301
+/english /music 301
+/news/archives/* /news 301
+/news/category/* /news 301
+/spiritual-reading/archives/* /spiritual-reading 301
+/spiritual-reading/category/* /spiritual-reading 301
+/1/feed /news/rss.xml 301
+/1/post/2021/04/eight-canons.html /news/eight-canons 301
+/1/post/2017/08/hand-painted-icons-by-constantine-basdekis.html /news/hand-painted-icons-by-constantine-basdekis 301
+/1/post/2016/04/holy-week.html /news/holy-week 301
+/1/post/2012/09/the-ladder-now-available.html /news/the-ladder-now-available 301
+/1/post/2012/05/new-store-website-bostonmonkscom.html /news/new-store-website-bostonmonkscom 301
+/1/post/2012/02/new-publications-website.html /news/new-publications-website 301
+/1/post/2011/10/the-ascetical-homilies-now-available.html /news/the-ascetical-homilies-now-available 301
+/1/post/2011/09/update-on-second-edition-of-the-ascetical-homilies.html /news/update-on-second-edition-of-the-ascetical-homilies 301
+/1/post/2011/09/the-ascetical-homilies.html /news/the-ascetical-homilies 301
+/2/post/2012/05/christ-is-risen.html /spiritual-reading/christ-is-risen 301
+/2/post/2012/04/behold-the-bridegroom-cometh-in-the-middle-of-the-night.html /spiritual-reading/behold-the-bridegroom-cometh-in-the-middle-of-the-night 301
+/2/post/2012/02/let-us-charge-into-the-good-fight.html /spiritual-reading/let-us-charge-into-the-good-fight 301
+/2/post/2012/01/let-us-follow-the-magi.html /spiritual-reading/let-us-follow-the-magi 301
+/2/post/2012/01/such-a-thing-is-wickedness.html /spiritual-reading/such-a-thing-is-wickedness 301
+/2/post/2012/01/god-is-with-us.html /spiritual-reading/god-is-with-us 301
+/2/post/2011/09/september-12th-2011.html /spiritual-reading/september-12th-2011 301

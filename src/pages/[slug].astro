@@ -1,0 +1,23 @@
+---
+// Top-level pages that come from content files:
+//   Information, every music page (/vespers, /september1 ...) and every photo album.
+import { getCollection } from 'astro:content';
+import ContentPage from '../components/ContentPage.astro';
+import MusicPage from '../components/MusicPage.astro';
+import AlbumPage from '../components/AlbumPage.astro';
+
+export async function getStaticPaths() {
+  const music = await getCollection('music');
+  const albums = await getCollection('albums');
+  return [
+    { params: { slug: 'information' }, props: { kind: 'page' as const, id: 'information' } },
+    ...music.map((e) => ({ params: { slug: e.id }, props: { kind: 'music' as const, id: e.id } })),
+    ...albums.map((e) => ({ params: { slug: e.id }, props: { kind: 'album' as const, id: e.id } })),
+  ];
+}
+
+const { kind, id } = Astro.props;
+---
+{kind === 'page' && <ContentPage id={id} />}
+{kind === 'music' && <MusicPage id={id} />}
+{kind === 'album' && <AlbumPage id={id} />}

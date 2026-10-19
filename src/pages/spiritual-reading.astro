@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { posts } from '../lib';
+const entries = await posts('reading');
+---
+<Base title="Spiritual Reading">
+  <h1>Spiritual Reading</h1>
+  <PostList entries={entries} base="/spiritual-reading" />
+</Base>
